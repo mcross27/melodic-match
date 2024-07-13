@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { User, Search, Moon, Sun } from 'lucide-react';
+// import { useAuth } from '../contexts/AuthContext';
+import { Link } from 'react-router-dom';
 
-const Header = ({ isDarkMode, toggleDarkMode, setCurrentView }) => {
+const Header = ({ isDarkMode, toggleDarkMode }) => {
   const [searchTerm, setSearchTerm] = useState('');
+  // const { user, logout } = useAuth();
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -12,7 +15,7 @@ const Header = ({ isDarkMode, toggleDarkMode, setCurrentView }) => {
 
   return (
     <motion.nav 
-      className="flex justify-between items-center mb-8"
+      className="flex justify-between items-center mb-8 p-4 bg-gray-800"
       initial={{ y: -50, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.5 }}
@@ -48,13 +51,24 @@ const Header = ({ isDarkMode, toggleDarkMode, setCurrentView }) => {
         >
           {isDarkMode ? <Sun size={24} className="text-white" /> : <Moon size={24} className="text-background" />}
         </motion.button>
-        <motion.button 
-          whileHover={{ scale: 1.1 }} 
-          whileTap={{ scale: 0.9 }}
-          onClick={() => setCurrentView('profile')}
-        >
-          <User size={24} className="text-white" />
-        </motion.button>
+        {/* {user ? ( */}
+          <motion.button 
+            whileHover={{ scale: 1.1 }} 
+            whileTap={{ scale: 0.9 }}
+            // onClick={logout}
+          >
+            <User size={24} className="text-white" />
+          </motion.button>
+        {/* ) : (
+          <Link to="/login">
+            <motion.button 
+              whileHover={{ scale: 1.1 }} 
+              whileTap={{ scale: 0.9 }}
+            >
+              <User size={24} className="text-white" />
+            </motion.button>
+          </Link>
+        )} */}
       </motion.div>
     </motion.nav>
   );

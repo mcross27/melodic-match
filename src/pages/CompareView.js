@@ -1,12 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
+import { addLikedArtist } from '../services/userPreferencesService';
 
-const CompareView = ({ setCurrentView }) => {
-  const comparingArtists = ['Artist A', 'Artist B'];
+const CompareView = () => {
+  const [comparingArtists, setComparingArtists] = useState(['Artist A', 'Artist B']);
+  const navigate = useNavigate();
 
   const selectArtist = (artist) => {
     console.log(`Selected ${artist}`);
-    setCurrentView('dashboard');
+    addLikedArtist(artist);
+    navigate('/dashboard');
   };
 
   return (

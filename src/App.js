@@ -1,35 +1,43 @@
 import React, { useState } from 'react';
-import { AnimatePresence } from 'framer-motion';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+// import { AuthProvider } from './contexts/AuthContext';
 import Layout from './components/Layout';
-import IntroView from './components/IntroView';
-import DashboardView from './components/DashboardView';
-import CompareView from './components/CompareView';
-import ArtistProfile from './components/ArtistProfile';
-import Settings from './components/Settings';
+import Home from './pages/Home';
+import Login from './pages/Login';
+import Dashboard from './pages/Dashboard';
+import Settings from './pages/Settings';
+import ArtistProfile from './pages/ArtistProfile';
+import CompareView from './pages/CompareView';
 import './styles/MelodicMatch.css';
 
-const App = () => {
-  const [currentView, setCurrentView] = useState('intro');
+const queryClient = new QueryClient();
+
+function App() {
   const [isDarkMode, setIsDarkMode] = useState(true);
 
   const toggleDarkMode = () => setIsDarkMode(!isDarkMode);
 
   return (
-    <Layout 
-      isDarkMode={isDarkMode} 
-      toggleDarkMode={toggleDarkMode} 
-      setCurrentView={setCurrentView}
-      currentView={currentView}
-    >
-      <AnimatePresence mode="wait">
-        {currentView === 'intro' && <IntroView key="intro" setCurrentView={setCurrentView} />}
-        {currentView === 'dashboard' && <DashboardView key="dashboard" setCurrentView={setCurrentView} />}
-        {currentView === 'compare' && <CompareView key="compare" setCurrentView={setCurrentView} />}
-        {currentView === 'artist' && <ArtistProfile key="artist" />}
-        {currentView === 'settings' && <Settings key="settings" isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />}
-      </AnimatePresence>
-    </Layout>
+    <QueryClientProvider client={queryClient}>
+      {/* <AuthProvider> */}
+        <Router>
+          <Layout isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode}>
+            {/* <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/settings" element={<Settings isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />} />
+              <Route path="/artist/:id" element={<ArtistProfile />} />
+              <Route path="/compare" element={<CompareView />} />
+            </Routes> */}
+          </Layout>
+        </Router>
+      {/* </AuthProvider> */}
+    </QueryClientProvider>
   );
-};
+}
+
 
 export default App;
+

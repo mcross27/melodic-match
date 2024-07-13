@@ -1,8 +1,30 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Disc, Music, User, Play } from 'lucide-react';
+import { getArtistInfo, getTopTracks } from '../services/musicService';
 
-const ArtistProfile = ({ artist = "Sample Artist" }) => {
+const ArtistProfile = () => {
+  const { id } = useParams();
+  const [artist, setArtist] = useState(null);
+  const [topTracks, setTopTracks] = useState([]);
+
+  useEffect(() => {
+    const fetchArtistData = async () => {
+      const artistData = await getArtistInfo(id);
+      setArtist(artistData);
+
+      const tracks = await getTopTracks(artistData.name);
+      setTopTracks(tracks.slice(0, 5));
+    };
+
+    fetchArtistData();
+  }, [id]);
+
+  if (!artist) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 50 }}
@@ -16,8 +38,8 @@ const ArtistProfile = ({ artist = "Sample Artist" }) => {
           <User size={64} />
         </div>
         <div>
-          <h1 className="text-4xl font-bold">{artist}</h1>
-          <p className="text-xl text-gray-300">Genre • Followers</p>
+          <h1 className="text-4xl font-bold">{artist.name}</h1>
+          <p className="text-xl text-gray-300">{artist.tags.tag[0].name} • {artist.stats.listeners} listeners</p>
         </div>
       </div>
 
@@ -26,9 +48,9 @@ const ArtistProfile = ({ artist = "Sample Artist" }) => {
           <Disc size={24} className="mr-2" /> Top Tracks
         </h2>
         <ul>
-          {['Track 1', 'Track 2', 'Track 3'].map((track, index) => (
-            <li key={track} className="mb-2 flex items-center justify-between">
-              <span>{track}</span>
+          {topTracks.map((track, index) => (
+            <li key={track.name} className="mb-2 flex items-center justify-between">
+              <span>{track.name}</span>
               <button className="text-accent hover:text-white transition-colors">
                 <Play size={20} />
               </button>
@@ -39,13 +61,13 @@ const ArtistProfile = ({ artist = "Sample Artist" }) => {
 
       <section>
         <h2 className="text-2xl font-bold mb-4 flex items-center">
-          <Music size={24} className="mr-2" /> Albums
+          <Music size={24} className="mr-2" /> Similar Artists
         </h2>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-          {['Album 1', 'Album 2', 'Album 3'].map((album) => (
-            <div key={album} className="bg-gray-800 p-4 rounded-lg">
+          {artist.similar.artist.slice(0, 6).map((similarArtist) => (
+            <div key={similarArtist.name} className="bg-gray-800 p-4 rounded-lg">
               <div className="w-full h-32 bg-gray-700 rounded-md mb-2"></div>
-              <p>{album}</p>
+              <p>{similarArtist.name}</p>
             </div>
           ))}
         </div>

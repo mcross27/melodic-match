@@ -1,13 +1,15 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Home, Disc, User, Settings } from 'lucide-react';
+import { Link, useLocation } from 'react-router-dom';
 
-const Sidebar = ({ setCurrentView, currentView }) => {
+const Sidebar = () => {
+  const location = useLocation();
   const navItems = [
-    { icon: Home, label: 'Home', view: 'dashboard' },
-    { icon: Disc, label: 'Discover', view: 'discover' },
-    { icon: User, label: 'Profile', view: 'profile' },
-    { icon: Settings, label: 'Settings', view: 'settings' },
+    { icon: Home, label: 'Home', path: '/' },
+    { icon: Disc, label: 'Discover', path: '/dashboard' },
+    { icon: User, label: 'Profile', path: '/profile' },
+    { icon: Settings, label: 'Settings', path: '/settings' },
   ];
 
   return (
@@ -18,17 +20,17 @@ const Sidebar = ({ setCurrentView, currentView }) => {
     >
       <h1 className="text-2xl font-bold mb-8">MelodicMatch</h1>
       <ul>
-        {navItems.map(({ icon: Icon, label, view }) => (
-          <li key={view} className="mb-4">
-            <button
-              onClick={() => setCurrentView(view)}
+        {navItems.map(({ icon: Icon, label, path }) => (
+          <li key={path} className="mb-4">
+            <Link
+              to={path}
               className={`flex items-center space-x-2 w-full p-2 rounded ${
-                currentView === view ? 'bg-accent text-background' : 'hover:bg-gray-800'
+                location.pathname === path ? 'bg-accent text-background' : 'hover:bg-gray-800'
               }`}
             >
               <Icon size={20} />
               <span>{label}</span>
-            </button>
+            </Link>
           </li>
         ))}
       </ul>
